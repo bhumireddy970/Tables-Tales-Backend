@@ -114,7 +114,7 @@ const MONGO_URI = process.env.MONGO_URL;
 
 // ✅ Enhanced CORS Configuration
 const allowedOrigins = [
-  "https://restaurant-app-table-tales.vercel.app",
+  "https://tables-tales-frontend.vercel.app",
   "http://localhost:5173",
   "http://localhost:3001",
 ];
