@@ -1,91 +1,11 @@
-// const cloudinary = require('../config/cloudinary'); // adjust path
-// const DeliveryBoy = require('../models/deliveryboy'); // ensure model is imported
-
-// async function addDeliveryBoy(req, res) {
-//     const { email, firstName, lastName, phone, status, rating } = req.body;
-
-//     if (!email || !phone) {
-//         return res.status(400).json({ message: 'Email and phone are required.' });
-//     }
-
-//     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-//     if (!emailRegex.test(email)) {
-//         return res.status(400).json({ message: 'Invalid email format.' });
-//     }
-
-//     if (!req.file) {
-//         return res.status(400).json({ message: 'Image is required' });
-//     }
-
-//     try {
-//         // Upload to Cloudinary from buffer
-//         const uploadResult = await cloudinary.uploader.upload_stream(
-//           { folder: 'deliveryboys' },
-//           async (error, result) => {
-//               if (error) {
-//                   console.error('Cloudinary upload error:', error);
-//                   return res.status(500).json({ message: 'Image upload failed', error: error.message });
-//               }
-
-//               const imageURL = result.secure_url;
-
-//               const existingDeliveryBoy = await DeliveryBoy.findOne({ email });
-//               if (existingDeliveryBoy) {
-//                   return res.status(400).json({ message: 'Email already exists.' });
-//               }
-
-//               const newPerson = await DeliveryBoy.create({
-//                   email,
-//                   firstName,
-//                   lastName,
-//                   phone,
-//                   status,
-//                   rating,
-//                   imageURL
-//               });
-
-//               return res.status(201).json({ message: "Delivery boy added successfully", data: newPerson });
-//           }
-//         );
-
-//         // Pipe buffer to upload stream
-//         const stream = require('stream');
-//         const bufferStream = new stream.PassThrough();
-//         bufferStream.end(req.file.buffer);
-//         bufferStream.pipe(uploadResult);
-
-//     } catch (error) {
-//         console.error('Error adding delivery boy:', error);
-//         res.status(500).json({ message: 'Error adding delivery boy', error: error.message });
-//     }
-// }
-
-
-// async function showDeliveryBoys(req,res){
-//     try{
-//         const boys = await DeliveryBoy.find({})
-//         if(!boys){
-//             return res.status(404).json({message:'No delivery boys found'})
-//         }
-//         return res.status(201).json({deliverboys:boys})
-//     }catch(err){
-//         return res.status(500).json({message:'Internal Server error'})
-//     }
-// }
-
-// module.exports = {
-//     addDeliveryBoy,
-//     showDeliveryBoys
-// }
-
-const cloudinary = require('../config/cloudinary'); // adjust path
-const DeliveryBoy = require('../models/deliveryboy');
-const streamifier = require('streamifier');
+const cloudinary = require("../config/cloudinary"); // adjust path
+const DeliveryBoy = require("../models/deliveryboy");
+const streamifier = require("streamifier");
 
 async function uploadToCloudinary(buffer) {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
-      { folder: 'deliveryboys' },
+      { folder: "deliveryboys" },
       (error, result) => {
         if (error) reject(error);
         else resolve(result);
@@ -99,23 +19,23 @@ async function addDeliveryBoy(req, res) {
   const { email, firstName, lastName, phone, status, rating } = req.body;
 
   if (!email || !phone) {
-    return res.status(400).json({ message: 'Email and phone are required.' });
+    return res.status(400).json({ message: "Email and phone are required." });
   }
 
   const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   if (!emailRegex.test(email)) {
-    return res.status(400).json({ message: 'Invalid email format.' });
+    return res.status(400).json({ message: "Invalid email format." });
   }
 
   if (!req.file) {
-    return res.status(400).json({ message: 'Image is required' });
+    return res.status(400).json({ message: "Image is required" });
   }
 
   try {
     // Check if email already exists
     const existingDeliveryBoy = await DeliveryBoy.findOne({ email });
     if (existingDeliveryBoy) {
-      return res.status(400).json({ message: 'Email already exists.' });
+      return res.status(400).json({ message: "Email already exists." });
     }
 
     // Upload image to Cloudinary
@@ -133,10 +53,17 @@ async function addDeliveryBoy(req, res) {
       imageURL,
     });
 
-    return res.status(201).json({ message: "Delivery boy added successfully", data: newDeliveryBoy });
+    return res
+      .status(201)
+      .json({
+        message: "Delivery boy added successfully",
+        data: newDeliveryBoy,
+      });
   } catch (error) {
-    console.error('Error adding delivery boy:', error);
-    return res.status(500).json({ message: 'Error adding delivery boy', error: error.message });
+    console.error("Error adding delivery boy:", error);
+    return res
+      .status(500)
+      .json({ message: "Error adding delivery boy", error: error.message });
   }
 }
 
@@ -144,12 +71,12 @@ async function showDeliveryBoys(req, res) {
   try {
     const boys = await DeliveryBoy.find({});
     if (!boys || boys.length === 0) {
-      return res.status(404).json({ message: 'No delivery boys found' });
+      return res.status(404).json({ message: "No delivery boys found" });
     }
     return res.status(200).json({ deliverboys: boys });
   } catch (err) {
-    console.error('Internal server error:', err);
-    return res.status(500).json({ message: 'Internal Server error' });
+    console.error("Internal server error:", err);
+    return res.status(500).json({ message: "Internal Server error" });
   }
 }
 
