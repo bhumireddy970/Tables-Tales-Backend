@@ -124,9 +124,9 @@ async function validateCustomer(req, res) {
   const { email, password, userRole } = req.body;
 
   try {
-    const customer = await Customer.findOne({ email });
+    const user = await Customer.findOne({ email });
     const deliveryBoy = await DeliveryBoy.findOne({ email });
-    if (!(customer || deliveryBoy)) {
+    if (!(user || deliveryBoy)) {
       return res.status(404).json({ message: "User not found" });
     }
     // First: handle special role logins without DB password
